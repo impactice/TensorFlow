@@ -190,4 +190,4 @@ else:
 ## 결론 
 이 코드는 **Generative Adversarial Network** (GAN)을 이용하여 **이미지를 생성**하는 모델을 학습시키는 과정입니다. GAN은 **Generator**와 **Discriminator**가 서로 경쟁하며 발전하는 방식으로 작동합니다. 최종적으로 생성된 이미지를 **애니메이션 GIF**로 저장하여 훈련 과정을 시각적으로 확인할 수 있습니다
 
-# Pix2Pix
+# Pix2Pix : 조건부 GAN을 사용한 이미지 대 이미지 변환
