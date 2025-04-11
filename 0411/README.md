@@ -1,4 +1,4 @@
-# DCGAN
+# DCGAN(심층 합성곱 생성적 적대 신경망)
 ## GAN을 이용한 이미지 생성 (DCGAN)
 
 이 프로젝트는 **Generative Adversarial Network (GAN)**을 사용하여 **이미지를 생성**하는 모델을 구현하는 과정입니다. GAN은 **Generator**와 **Discriminator**라는 두 개의 신경망 모델이 서로 경쟁하면서 발전하는 방식으로 작동합니다. Generator는 **이미지를 생성**하고, Discriminator는 그 이미지를 **진짜 이미지**와 **가짜 이미지**로 구별합니다.
