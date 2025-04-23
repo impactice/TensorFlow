@@ -145,7 +145,8 @@ plt.show()
 ```python
 test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 print(f"Test accuracy: {test_acc:.4f}") 
-```python
+```
+
 - 테스트 데이터셋을 사용해 최종 모델 성능을 평가합니다
 - 정확도(test_acc)가 모델의 최종 분류 성능을 나타냅니다
 
