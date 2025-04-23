@@ -1,5 +1,6 @@
 # 이미지 
 ## 컨볼루셔널 신경망(Convolutional_Neural_Network)
+```
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
@@ -58,7 +59,7 @@ plt.show()
 # Evaluate the model
 test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 print(f"Test accuracy: {test_acc:.4f}")
-
+```
 
 
 
