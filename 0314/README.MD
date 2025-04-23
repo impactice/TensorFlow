@@ -150,4 +150,6 @@ print(f"Test accuracy: {test_acc:.4f}")
 - 정확도(test_acc)가 모델의 최종 분류 성능을 나타냅니다
 
 
+
+
 ## 이미지 분류(image classification)
