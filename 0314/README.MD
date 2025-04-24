@@ -366,9 +366,54 @@ layers.Rescaling(1./255)
 - 픽셀값을 [0, 1]로 정규화
 - cache, prefetch, shuffle을 통해 성능 최적화
 
+#### 3. 📐 기본 모델 설계 및 학습
+``` 
+model = Sequential([...Conv2D, MaxPooling2D, Flatten, Dense...])
+``` 
 
+- 간단한 CNN 구조:
+  - Conv2D + MaxPooling 계층 3세트
+  - Dense(128) → Dense(클래스 수)
+- 활성화 함수는 ReLU, 마지막은 logits 출력 (softmax 안 씀) 
 
+컴파일 및 학습 
+``` 
+model.compile(optimizer='adam', loss=SparseCategoricalCrossentropy(from_logits=True))
+model.fit(...)
+``` 
+#### 4. 🧪 데이터 증강 및 모델 재구성
+``` 
+data_augmentation = Sequential([...RandomFlip, RandomRotation, RandomZoom...])
+``` 
+- 학습 데이터에 대해 이미지 증강 (augmentation) 적용
 
+모델에 Dropout 추가:
+``` 
+layers.Dropout(0.2) 
+``` 
+→ 오버피팅 방지 효과
+
+#### 5. 📷 새 이미지 예측
+```
+img = tf.keras.utils.load_img(...)
+predictions = model.predict(img_array)
+```
+- 새 이미지(Red_sunflower.jpg)를 불러와 모델이 예측
+- tf.nn.softmax(predictions)로 확률화
+
+#### 6. ⚡ 모델 경량화 (TensorFlow Lite) 
+```
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()
+```
+- 훈련된 모델을 TFLite 포맷으로 변환 → 모바일/임베디드에서 사용 가능
+
+추론 (Lite 모델 사용): 
+```
+interpreter = tf.lite.Interpreter(...)
+classify_lite = interpreter.get_signature_runner('serving_default')
+```
+- .tflite 파일로 실제 추론 결과 확인
 
 
 
