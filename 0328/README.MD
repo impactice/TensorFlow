@@ -98,7 +98,8 @@ train_ds = train_ds.shuffle(1000).map(f, num_parallel_calls=tf.data.AUTOTUNE).ba
 val_ds = val_ds.map(resize_and_rescale, num_parallel_calls=tf.data.AUTOTUNE).batch(32).prefetch(tf.data.AUTOTUNE)
 test_ds = test_ds.map(resize_and_rescale, num_parallel_calls=tf.data.AUTOTUNE).batch(32).prefetch(tf.data.AUTOTUNE)
 ```
-## 이미지 분절화
+## 이미지 분절화 
+```
 import tensorflow as tf
 import tensorflow_datasets as tfds
 from tensorflow_examples.models.pix2pix import pix2pix
