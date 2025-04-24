@@ -340,37 +340,37 @@ print("Lite Model: This image most likely belongs to {} with a {:.2f} percent co
       .format(class_names[np.argmax(score_lite)], 100 * np.max(score_lite)))
 print(np.max(np.abs(predictions - predictions_lite)))
 ```
-
-
-
-
 ---
-
-## ✍️ 2. 설명 정리 (README용 Markdown)
-
-```markdown
-# 🌸 Flower Image Classification with TensorFlow
-
-This project trains a CNN model to classify flower images into 5 categories, and demonstrates TensorFlow Lite model conversion for lightweight deployment.
+### 🧠 핵심 알고리즘 및 처리 흐름
+#### 1. 📂 데이터셋 로드 
 ```
----
+dataset_url = "https://...flower_photos.tgz"
+data_dir = tf.keras.utils.get_file(...untar=True)
+``` 
+- 꽃 이미지 데이터셋을 다운로드하고 압축 해제 
+- 클래스는 5종류: ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
 
-## 🧠 Summary
+#### 2. 🧹 데이터셋 구성 및 전처리 
+``` 
+image_dataset_from_directory(...validation_split=0.2...)
+```  
+- 훈련용(80%) / 검증용(20%)으로 나눔 
+- image_size=(180, 180)로 리사이즈 
+- batch_size=32
 
-| Feature        | Description |
-|----------------|-------------|
-| **Dataset**    | Flower images (daisy, dandelion, roses, sunflowers, tulips) |
-| **Model**      | CNN (Conv2D + MaxPooling + Dense) |
-| **Preprocessing** | Rescaling, Shuffle, Prefetch |
-| **Augmentation** | Flip, Rotation, Zoom |
-| **Loss**       | SparseCategoricalCrossentropy (with logits) |
-| **Optimizer**  | Adam |
-| **Deployment** | TensorFlow Lite (.tflite) conversion |
+정규화 & 성능 최적화
+``` 
+layers.Rescaling(1./255)
+.cache().shuffle().prefetch(buffer_size=AUTOTUNE)
+``` 
+- 픽셀값을 [0, 1]로 정규화
+- cache, prefetch, shuffle을 통해 성능 최적화
 
----
 
-## 🏗️ Architecture
 
-```text
-Input Image → Data Augmentation → Conv2D Layers → MaxPooling → Dropout → Flatten → Dense → Output
-```
+
+
+
+
+
+
