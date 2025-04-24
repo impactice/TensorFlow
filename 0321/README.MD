@@ -122,3 +122,69 @@ for i in range(9):
 ```
 
 ## TF Hub를 사용한 전이 학습
+```
+import matplotlib.pylab as plt
+import tensorflow as tf
+import numpy as np
+import tensorflow_hub as hub
+from tensorflow.keras import layers
+
+# 1. Pre-trained 모델 로드
+classifier_url = "https://tfhub.dev/google/tf2-preview/mobilenet_v2/classification/2"
+IMAGE_SHAPE = (224, 224)
+classifier = tf.keras.Sequential([
+    hub.KerasLayer(classifier_url, input_shape=IMAGE_SHAPE+(3,))
+])
+
+# 2. 이미지 분류 예시
+# grace_hopper 이미지는 생략 (사용자가 추가 필요)
+grace_hopper = np.array(grace_hopper) / 255.0
+result = classifier.predict(grace_hopper[np.newaxis, ...])
+predicted_class = np.argmax(result[0], axis=-1)
+
+labels_path = tf.keras.utils.get_file('ImageNetLabels.txt','https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt')
+imagenet_labels = np.array(open(labels_path).read().splitlines())
+predicted_class_name = imagenet_labels[predicted_class]
+
+# 3. 꽃 이미지 데이터셋 로드
+data_root = tf.keras.utils.get_file(
+    'flower_photos','https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz', untar=True)
+image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1/255)
+image_data = image_generator.flow_from_directory(str(data_root), target_size=IMAGE_SHAPE)
+
+# 4. Feature Extractor 로드
+feature_extractor_url = "https://tfhub.dev/google/tf2-preview/mobilenet_v2/feature_vector/2"
+feature_extractor_layer = hub.KerasLayer(feature_extractor_url, input_shape=(224,224,3))
+feature_extractor_layer.trainable = False
+
+# 5. 모델 구성
+model = tf.keras.Sequential([
+  feature_extractor_layer,
+  layers.Dense(image_data.num_classes, activation='softmax')
+])
+
+# 6. 모델 컴파일 및 훈련
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+
+class CollectBatchStats(tf.keras.callbacks.Callback):
+  def __init__(self):
+    self.batch_losses = []
+    self.batch_acc = []
+  def on_train_batch_end(self, batch, logs=None):
+    self.batch_losses.append(logs['loss'])
+    self.batch_acc.append(logs['acc'])
+    self.model.reset_metrics()
+
+steps_per_epoch = np.ceil(image_data.samples/image_data.batch_size)
+batch_stats_callback = CollectBatchStats()
+
+history = model.fit(image_data, epochs=2,
+                    steps_per_epoch=steps_per_epoch,
+                    callbacks=[batch_stats_callback])
+
+# 7. 모델 저장 및 불러오기
+import time
+export_path = "/tmp/saved_models/{}".format(int(time.time()))
+model.save(export_path, save_format='tf')
+reloaded = tf.keras.models.load_model(export_path)
+```
