@@ -1,6 +1,6 @@
 # 이미지 
 ## 컨볼루셔널 신경망(Convolutional_Neural_Network) 
-📌 전체 구조 요약
+### 📌 전체 구조 요약
 
 1. 데이터 로드 및 시각화
 2. 데이터셋 분할 (train/val)
