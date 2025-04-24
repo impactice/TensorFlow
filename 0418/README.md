@@ -197,7 +197,94 @@ for inp in test_horses.take(5):
 
 ```
 
-
-
-
 # 적대 FGSM
+```
+import tensorflow as tf
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+
+# 그래프의 크기 및 스타일 설정
+mpl.rcParams['figure.figsize'] = (8, 8)
+mpl.rcParams['axes.grid'] = False
+
+# 사전 학습된 MobileNetV2 모델 로드 (ImageNet 데이터로 학습된 모델)
+pretrained_model = tf.keras.applications.MobileNetV2(include_top=True,
+                                                     weights='imagenet')
+pretrained_model.trainable = False  # 학습 불가능하게 설정
+
+# ImageNet 레이블 디코딩 함수
+decode_predictions = tf.keras.applications.mobilenet_v2.decode_predictions
+
+# 이미지를 전처리하여 MobileNetV2에 입력 가능하도록 변환하는 함수
+def preprocess(image):
+  image = tf.cast(image, tf.float32)  # float32로 형변환
+  image = tf.image.resize(image, (224, 224))  # 모델 입력 크기로 리사이즈
+  image = tf.keras.applications.mobilenet_v2.preprocess_input(image)  # 전처리 함수 적용
+  image = image[None, ...]  # 배치 차원 추가
+  return image
+
+# 예측 확률로부터 레이블 추출 함수
+def get_imagenet_label(probs):
+  return decode_predictions(probs, top=1)[0][0]
+
+# 샘플 이미지 다운로드 및 디코딩
+image_path = tf.keras.utils.get_file('YellowLabradorLooking_new.jpg',
+  'https://storage.googleapis.com/download.tensorflow.org/example_images/YellowLabradorLooking_new.jpg')
+image_raw = tf.io.read_file(image_path)
+image = tf.image.decode_image(image_raw)
+
+# 이미지 전처리 및 예측
+image = preprocess(image)
+image_probs = pretrained_model.predict(image)
+
+# 원본 이미지와 예측 결과 시각화
+plt.figure()
+plt.imshow(image[0] * 0.5 + 0.5)  # [-1, 1] 범위를 [0, 1]로 변환하여 출력
+_, image_class, class_confidence = get_imagenet_label(image_probs)
+plt.title('{} : {:.2f}% Confidence'.format(image_class, class_confidence*100))
+plt.show()
+
+# 손실 함수 정의 (다중 클래스 분류용)
+loss_object = tf.keras.losses.CategoricalCrossentropy()
+
+# 적대적 예제를 생성하는 함수 (공격용 이미지 패턴 생성)
+def create_adversarial_pattern(input_image, input_label):
+  with tf.GradientTape() as tape:
+    tape.watch(input_image)
+    prediction = pretrained_model(input_image)
+    loss = loss_object(input_label, prediction)
+
+  # 입력 이미지에 대한 손실의 그래디언트 계산
+  gradient = tape.gradient(loss, input_image)
+  # 그래디언트의 부호(sign)를 취해서 작은 노이즈 생성
+  signed_grad = tf.sign(gradient)
+  return signed_grad
+
+# 이미지의 정답 레이블 생성 (labrador retriever의 인덱스는 208)
+labrador_retriever_index = 208
+label = tf.one_hot(labrador_retriever_index, image_probs.shape[-1])
+label = tf.reshape(label, (1, image_probs.shape[-1]))
+
+# 적대적 패턴 생성 및 시각화
+perturbations = create_adversarial_pattern(image, label)
+plt.imshow(perturbations[0] * 0.5 + 0.5)  # [-1, 1] 범위를 [0, 1]로 변환하여 출력
+
+# 이미지 및 예측 결과를 보여주는 함수
+def display_images(image, description):
+  _, label, confidence = get_imagenet_label(pretrained_model.predict(image))
+  plt.figure()
+  plt.imshow(image[0]*0.5+0.5)
+  plt.title('{} \n {} : {:.2f}% Confidence'.format(description,
+                                                   label, confidence*100))
+  plt.show()
+
+# 다양한 epsilon(노이즈의 강도) 값을 적용하여 적대적 예제 생성 및 시각화
+epsilons = [0, 0.01, 0.1, 0.15]
+descriptions = [('Epsilon = {:0.3f}'.format(eps) if eps else 'Input')
+                for eps in epsilons]
+
+for i, eps in enumerate(epsilons):
+  adv_x = image + eps*perturbations  # 원본 이미지에 노이즈 추가
+  adv_x = tf.clip_by_value(adv_x, -1, 1)  # [-1, 1] 범위로 클리핑
+  display_images(adv_x, descriptions[i])  # 시각화
+```
