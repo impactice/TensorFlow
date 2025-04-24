@@ -352,7 +352,7 @@ print(np.max(np.abs(predictions - predictions_lite)))
 # 🌸 Flower Image Classification with TensorFlow
 
 This project trains a CNN model to classify flower images into 5 categories, and demonstrates TensorFlow Lite model conversion for lightweight deployment.
-
+```
 ---
 
 ## 🧠 Summary
@@ -373,3 +373,4 @@ This project trains a CNN model to classify flower images into 5 categories, and
 
 ```text
 Input Image → Data Augmentation → Conv2D Layers → MaxPooling → Dropout → Flatten → Dense → Output
+```
