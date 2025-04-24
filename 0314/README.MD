@@ -70,6 +70,7 @@ plt.show()
 test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 print(f"Test accuracy: {test_acc:.4f}")
 ```
+
 ## 🧠 TensorFlow CIFAR-10 CNN 설명
 
 이 문서는 TensorFlow를 사용해 CIFAR-10 데이터셋을 분류하는 CNN 모델의 전체 흐름을 단계별로 설명합니다.
@@ -338,7 +339,7 @@ score_lite = tf.nn.softmax(predictions_lite)
 print("Lite Model: This image most likely belongs to {} with a {:.2f} percent confidence."
       .format(class_names[np.argmax(score_lite)], 100 * np.max(score_lite)))
 print(np.max(np.abs(predictions - predictions_lite)))
-
+```
 
 
 
