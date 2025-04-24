@@ -338,3 +338,37 @@ score_lite = tf.nn.softmax(predictions_lite)
 print("Lite Model: This image most likely belongs to {} with a {:.2f} percent confidence."
       .format(class_names[np.argmax(score_lite)], 100 * np.max(score_lite)))
 print(np.max(np.abs(predictions - predictions_lite)))
+
+
+
+
+
+---
+
+## ✍️ 2. 설명 정리 (README용 Markdown)
+
+```markdown
+# 🌸 Flower Image Classification with TensorFlow
+
+This project trains a CNN model to classify flower images into 5 categories, and demonstrates TensorFlow Lite model conversion for lightweight deployment.
+
+---
+
+## 🧠 Summary
+
+| Feature        | Description |
+|----------------|-------------|
+| **Dataset**    | Flower images (daisy, dandelion, roses, sunflowers, tulips) |
+| **Model**      | CNN (Conv2D + MaxPooling + Dense) |
+| **Preprocessing** | Rescaling, Shuffle, Prefetch |
+| **Augmentation** | Flip, Rotation, Zoom |
+| **Loss**       | SparseCategoricalCrossentropy (with logits) |
+| **Optimizer**  | Adam |
+| **Deployment** | TensorFlow Lite (.tflite) conversion |
+
+---
+
+## 🏗️ Architecture
+
+```text
+Input Image → Data Augmentation → Conv2D Layers → MaxPooling → Dropout → Flatten → Dense → Output
