@@ -3,7 +3,6 @@
 ## 데이터 증강 (Data augmentation)
 ```
 # tf_flowers 이미지 분류 전체 코드 정리
-```
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
