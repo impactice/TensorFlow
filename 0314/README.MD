@@ -1,14 +1,5 @@
 # 이미지 
 ## 컨볼루셔널 신경망(Convolutional_Neural_Network) 
-### 📌 전체 구조 요약
-
-1. 데이터 로드 및 시각화
-2. 데이터셋 분할 (train/val)
-3. 전처리 (정규화, 캐시, prefetch 등)
-4. 모델 설계와 학습
-5. 데이터 증강 추가 후 재학습
-6. 이미지 예측
-7. TensorFlow Lite 모델 변환 및 추론 
 
 ```
 import tensorflow as tf
@@ -164,7 +155,16 @@ print(f"Test accuracy: {test_acc:.4f}")
 
 
 
-## 이미지 분류(image classification)
+## 이미지 분류(image classification) 
+### 📌 전체 구조 요약
+
+1. 데이터 로드 및 시각화
+2. 데이터셋 분할 (train/val)
+3. 전처리 (정규화, 캐시, prefetch 등)
+4. 모델 설계와 학습
+5. 데이터 증강 추가 후 재학습
+6. 이미지 예측
+7. TensorFlow Lite 모델 변환 및 추론 
 ```python
 
 import matplotlib.pyplot as plt
